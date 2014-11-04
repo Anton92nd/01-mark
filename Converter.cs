@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.Remoting.Lifetime;
-using System.Text;
-using System.Threading.Tasks;
 using NUnit.Framework;
 
 namespace Mark
@@ -15,25 +12,38 @@ namespace Mark
 
 		private static string[] GetParagraphsFromText(string[] text)
 		{
-			return text;
+			var result = new List<string>();
+			while (text.Length > 0)
+			{
+				text = text.SkipWhile(x => x.Trim().Length == 0).ToArray();
+				var paragraphLines = text.TakeWhile(x => x.Trim().Length > 0);
+				text = text.SkipWhile(x => x.Trim().Length > 0).ToArray();
+				var paragraph = String.Join(" ", paragraphLines);
+				if (paragraph.Trim().Length > 0)
+					result.Add("<p>\n" + paragraph + "\n</p>");
+			}
+			return result.ToArray();
 		}
 
-		private static void WriteParagraphsToStream(StreamWriter outputStream, string[] paragraphs)
+		static public string ConvertString(string content)
 		{
-			return;
+			var paragraphs = GetParagraphsFromText(content.Split(LineEndings, StringSplitOptions.None));
+			string result = "<html>";
+			foreach (var i in paragraphs)
+			{
+				result += '\n' + i;
+			}
+			return result + "\n</html>\n";
 		}
 
-		static public void Convert(string fileNameWithExtension)
+		static public void ConvertFile(string fileNameWithExtension)
 		{
 			using (var inputStream = new StreamReader(fileNameWithExtension))
 			{
 				var fileName = fileNameWithExtension.Split('.')[0];
 				var outputStream = new StreamWriter(fileName + ".html");
-				var text = inputStream.ReadToEnd().Split(LineEndings, StringSplitOptions.None);
-				var paragraphs = GetParagraphsFromText(text);
-				outputStream.WriteLine("<html>");
-				WriteParagraphsToStream(outputStream, paragraphs);
-				outputStream.WriteLine("</html>");
+				var result = ConvertString(inputStream.ReadToEnd());
+				outputStream.Write(result);
 				outputStream.Close();
 			}
 		}
@@ -41,7 +51,7 @@ namespace Mark
 		static void Main(string[] args)
 		{
 			string fileName = Console.ReadLine();
-			Convert(fileName);
+			ConvertFile(fileName);
 		}
 	}
 
@@ -49,25 +59,33 @@ namespace Mark
 	class Converter_should
 	{
 		[Test]
-		public void throw_exception_if_no_such_fule()
+		public void throw_exception_if_no_such_file()
 		{
-			Assert.Throws<FileNotFoundException>(() => Converter.Convert("no_such_file.txt"));
+			Assert.Throws<FileNotFoundException>(() => Converter.ConvertFile("no_such_file.txt"));
 		}
 
 		[Test]
 		public void create_file_with_html_extension()
 		{
-			Converter.Convert("sample.txt");
+			Converter.ConvertFile("sample.txt");
 			Assert.True(File.Exists("sample.html"));
 		}
 
 		[Test]
 		public void convert_empty_file_into_file_with_html_tag()
 		{
-			Converter.Convert("empty.txt");
-			var result = new StreamReader("empty.html").ReadToEnd();
-			var expected = new StreamReader("emptyResult.txt").ReadToEnd();
-			Assert.True(expected.Equals(result));
+			Converter.ConvertFile("empty.txt");
+			var result = new StreamReader("empty.html").ReadToEnd().Split(Converter.LineEndings, StringSplitOptions.RemoveEmptyEntries);
+			var expected = new StreamReader("emptyResult.txt").ReadToEnd().Split(Converter.LineEndings, StringSplitOptions.RemoveEmptyEntries);
+			Assert.AreEqual(expected, result);
+		}
+
+		[Test]
+		public void add_p_tags_around_paragraphs()
+		{
+			string text = "This\nis\nfirst paragraph\n   \nThis is\nsecond\n";
+			string result = Converter.ConvertString(text);
+			Assert.AreEqual("<html>\n<p>\nThis is first paragraph\n</p>\n<p>\nThis is second\n</p>\n</html>\n", result);
 		}
 	}
 }
