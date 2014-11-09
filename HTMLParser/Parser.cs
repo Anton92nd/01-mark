@@ -8,7 +8,7 @@ namespace Mark.HTMLParser
 {
 	public class Parser
 	{
-		private List<TokenReader> readers;
+		private List<ITokenReader> readers;
 
 		public List<Token> Parse(string text)
 		{

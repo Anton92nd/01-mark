@@ -35,5 +35,13 @@ namespace Mark.HTMLParser
 			this.value = source;
 			this.type = type;
 		}
+
+		public override bool Equals(object obj)
+		{
+			var token = obj as Token;
+			if (token == null)
+				return false;
+			return source.Equals(token.source) && value.Equals(token.value) && token.type == type;
+		}
 	}
 }

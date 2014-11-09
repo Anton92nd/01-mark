@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Mark.HTMLParser
 {
-	class WhitespaceReader : TokenReader
+	public class WhitespaceReader : ITokenReader
 	{
 		private static readonly char[] LineEndings = {'\r', '\n'};
 		public Token ReadToken(string from)

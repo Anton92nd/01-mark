@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Mark.HTMLParser
 {
-	class LineEndReader : TokenReader
+	public class LineEndReader : ITokenReader
 	{
 		public Token ReadToken(string from)
 		{

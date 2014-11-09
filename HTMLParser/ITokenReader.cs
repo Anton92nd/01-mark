@@ -1,6 +1,6 @@
 ﻿namespace Mark.HTMLParser
 {
-	interface TokenReader
+	public interface ITokenReader
 	{
 		Token ReadToken(string from);
 	}

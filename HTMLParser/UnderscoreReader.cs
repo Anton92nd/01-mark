@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Mark.HTMLParser
 {
-	class UnderscoreReader : TokenReader
+	public class UnderscoreReader : ITokenReader
 	{
 		public Token ReadToken(string from)
 		{
