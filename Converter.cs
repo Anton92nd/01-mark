@@ -2,17 +2,30 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
+using Mark.HTMLParser;
 
 namespace Mark
 {
 	class Converter
 	{
-		static public readonly string[] LineEndings = { "\r\n", "\r", "\n" };
+
+		private static Parser InitParser()
+		{
+			var parser = new Parser();
+			return parser;
+		}
+
+		private static string ConstructHTML(List<Token> tokens)
+		{
+			return "<html>\n</html>\n";
+		}
 
 		static public string ConvertString(string content)
 		{
-			string result = "<html>\n" + content;
-			return result + "\n</html>\n";
+			var parser = InitParser();
+			var tokens = parser.Parse(content);
+			return ConstructHTML(tokens);
 		}
 
 		static public void ConvertFile(string fileNameWithExtension)

@@ -46,6 +46,10 @@
   <ItemGroup>
     <Compile Include="Converter.cs" />
     <Compile Include="Converter_should.cs" />
+    <Compile Include="HTMLParser\Parser.cs" />
+    <Compile Include="HTMLParser\Parser_should.cs" />
+    <Compile Include="HTMLParser\Token.cs" />
+    <Compile Include="HTMLParser\TokenReader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

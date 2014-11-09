@@ -27,9 +27,10 @@ namespace Mark
 		[Test]
 		public void convert_empty_file_into_file_with_html_tag()
 		{
+			var lineEndings = new[] {"\r\n", "\r", "\n"};
 			Converter.ConvertFile("empty.txt");
-			var result = new StreamReader("empty.html").ReadToEnd().Split(Converter.LineEndings, StringSplitOptions.RemoveEmptyEntries);
-			var expected = new StreamReader("emptyResult.txt").ReadToEnd().Split(Converter.LineEndings, StringSplitOptions.RemoveEmptyEntries);
+			var result = new StreamReader("empty.html").ReadToEnd().Split(lineEndings, StringSplitOptions.RemoveEmptyEntries);
+			var expected = new StreamReader("emptyResult.txt").ReadToEnd().Split(lineEndings, StringSplitOptions.RemoveEmptyEntries);
 			Assert.AreEqual(expected, result);
 		}
 
