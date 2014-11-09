@@ -28,5 +28,12 @@ namespace Mark.HTMLParser
 			this.value = value;
 			this.type = type;
 		}
+
+		public Token(string source, TokenType type)
+		{
+			this.source = source;
+			this.value = source;
+			this.type = type;
+		}
 	}
 }

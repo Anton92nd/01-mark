@@ -8,7 +8,7 @@ using NUnit.Framework;
 namespace Mark.HTMLParser
 {
 	[TestFixture]
-	class Parser_should
+	class HTMLParser_should
 	{
 		[Test]
 		public void return_empty_list_on_empty_string()
