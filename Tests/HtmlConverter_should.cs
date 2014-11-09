@@ -5,22 +5,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
+using Mark;
 
-namespace Mark
+namespace Tests
 {
 	[TestFixture]
-	class Converter_should
+	class HtmlConverter_should
 	{
 		[Test]
 		public void throw_exception_if_no_such_file()
 		{
-			Assert.Throws<FileNotFoundException>(() => Converter.ConvertFile("no_such_file.txt"));
+			Assert.Throws<FileNotFoundException>(() => HtmlConverter.ConvertFile("no_such_file.txt"));
 		}
 
 		[Test]
 		public void create_file_with_html_extension()
 		{
-			Converter.ConvertFile("sample.txt");
+			HtmlConverter.ConvertFile("sample.txt");
 			Assert.True(File.Exists("sample.html"));
 		}
 
@@ -28,7 +29,7 @@ namespace Mark
 		public void convert_empty_file_into_file_with_html_tag()
 		{
 			var lineEndings = new[] {"\r\n", "\r", "\n"};
-			Converter.ConvertFile("empty.txt");
+			HtmlConverter.ConvertFile("empty.txt");
 			var result = new StreamReader("empty.html").ReadToEnd().Split(lineEndings, StringSplitOptions.RemoveEmptyEntries);
 			var expected = new StreamReader("emptyResult.txt").ReadToEnd().Split(lineEndings, StringSplitOptions.RemoveEmptyEntries);
 			Assert.AreEqual(expected, result);
@@ -38,7 +39,7 @@ namespace Mark
 		public void add_p_tags_around_paragraphs()
 		{
 			string text = "This\nis\nfirst paragraph\n   \nThis is\nsecond\n";
-			string result = Converter.ConvertString(text);
+			string result = HtmlConverter.ConvertString(text);
 			Assert.AreEqual("<html>\n<p>\nThis is first paragraph\n</p>\n<p>\nThis is second\n</p>\n</html>\n", result);
 		}
 	}

@@ -4,8 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
+using Mark.HTMLParser;
 
-namespace Mark.HTMLParser
+namespace Tests
 {
 	[TestFixture]
 	class HTMLParser_should

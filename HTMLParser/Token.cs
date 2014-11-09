@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Mark.HTMLParser
 {
-	enum TokenType
+	public enum TokenType
 	{
 		LineEnd,
 		Whitespace,
@@ -16,7 +16,7 @@ namespace Mark.HTMLParser
 		Separator
 	}
 
-	class Token
+	public class Token
 	{
 		private string source { get; set; }
 		private string value { get; set; }

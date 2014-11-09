@@ -7,7 +7,7 @@ using Mark.HTMLParser;
 
 namespace Mark
 {
-	class Converter
+	public class HtmlConverter
 	{
 
 		private static Parser InitParser()
@@ -16,7 +16,7 @@ namespace Mark
 			return parser;
 		}
 
-		private static string ConstructHTML(List<Token> tokens)
+		private static string ConstructHtml(List<Token> tokens)
 		{
 			return "<html>\n</html>\n";
 		}
@@ -25,7 +25,7 @@ namespace Mark
 		{
 			var parser = InitParser();
 			var tokens = parser.Parse(content);
-			return ConstructHTML(tokens);
+			return ConstructHtml(tokens);
 		}
 
 		static public void ConvertFile(string fileNameWithExtension)
