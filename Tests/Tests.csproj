@@ -48,6 +48,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UnderscoreReader_should.cs" />
     <Compile Include="WhitespaceReader_should.cs" />
+    <Compile Include="WordReader_should.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Mark.csproj">

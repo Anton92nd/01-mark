@@ -51,6 +51,7 @@
     <Compile Include="HTMLParser\ITokenReader.cs" />
     <Compile Include="HTMLParser\UnderscoreReader.cs" />
     <Compile Include="HTMLParser\WhitespaceReader.cs" />
+    <Compile Include="HTMLParser\WordReader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
