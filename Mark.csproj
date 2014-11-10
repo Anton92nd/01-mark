@@ -45,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="HtmlConverter.cs" />
+    <Compile Include="HTMLParser\EscapeReader.cs" />
     <Compile Include="HTMLParser\LineEndReader.cs" />
     <Compile Include="HTMLParser\Parser.cs" />
     <Compile Include="HTMLParser\Token.cs" />
