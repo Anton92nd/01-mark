@@ -18,9 +18,8 @@ namespace Mark.HTMLParser
 
 	public class Token
 	{
-		private string source { get; set; }
-		private string value { get; set; }
-		private TokenType type { get; set; }
+		public readonly string source, value;
+		public readonly TokenType type;
 
 		public Token(string source, string value, TokenType type)
 		{

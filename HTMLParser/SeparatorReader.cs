@@ -9,7 +9,7 @@ namespace Mark.HTMLParser
 {
 	public class SeparatorReader : ITokenReader
 	{
-		private static readonly char[] Separators = new char[] {'.', ',', '\'', '\"', '!', '?', '%', '@',
+		private static readonly char[] Separators = new char[] {'`', '.', ',', '\'', '\"', '!', '?', '%', '@',
 			'#', '$', '^', '&', '*', '/', '<', '>', '-', '=' };
 
 		private static readonly Dictionary<string, string> NeedEscape = new Dictionary<string, string>()
