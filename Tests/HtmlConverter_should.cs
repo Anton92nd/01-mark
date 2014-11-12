@@ -40,7 +40,47 @@ namespace Tests
 		{
 			string text = "This\nis\nfirst paragraph\n   \nThis is\nsecond\n";
 			string result = HtmlConverter.ConvertString(text);
-			Assert.AreEqual("<html>\n<p>\nThis is first paragraph\n</p>\n<p>\nThis is second\n</p>\n</html>\n", result);
+			Assert.AreEqual("<html><head><meta charset=\"UTF-8\"></head>\n<p>\nThis\nis\nfirst paragraph\n</p>\n<p>\nThis is\nsecond\n</p>\n</html>", result);
+		}
+
+		[Test]
+		public void find_em_tag()
+		{
+			string text = "_hello world_";
+			string result = HtmlConverter.ConvertString(text);
+			Assert.AreEqual("<html><head><meta charset=\"UTF-8\"></head>\n<p>\n<em>hello world</em>\n</p>\n</html>", result);
+		}
+
+		[Test]
+		public void find_strong_tag()
+		{
+			string text = "__hello world__";
+			string result = HtmlConverter.ConvertString(text);
+			Assert.AreEqual("<html><head><meta charset=\"UTF-8\"></head>\n<p>\n<strong>hello world</strong>\n</p>\n</html>", result);
+		}
+
+		[Test]
+		public void find_code_tag()
+		{
+			string text = "`hello world`";
+			string result = HtmlConverter.ConvertString(text);
+			Assert.AreEqual("<html><head><meta charset=\"UTF-8\"></head>\n<p>\n<code>hello world</code>\n</p>\n</html>", result);
+		}
+
+		[Test]
+		public void find_strong_tag_inside_em_tag()
+		{
+			string text = "_hello __world__!_";
+			string result = HtmlConverter.ConvertString(text);
+			Assert.AreEqual("<html><head><meta charset=\"UTF-8\"></head>\n<p>\n<em>hello <strong>world</strong>!</em>\n</p>\n</html>", result);
+		}
+
+		[Test]
+		public void not_convert_escaped_underscore()
+		{
+			string text = "\\_hello world\\_";
+			string result = HtmlConverter.ConvertString(text);
+			Assert.AreEqual("<html><head><meta charset=\"UTF-8\"></head>\n<p>\n_hello world_\n</p>\n</html>", result);
 		}
 	}
 }

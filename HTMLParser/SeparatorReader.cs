@@ -22,6 +22,8 @@ namespace Mark.HTMLParser
 			if (from.Length == 0)
 				return null;
 			string result = from.Substring(0, 1);
+			if (from[0] == '`')
+				return new Token(result, TokenType.Code);
 			if (NeedEscape.ContainsKey(result))
 			{
 				result = NeedEscape[result];

@@ -24,7 +24,7 @@ namespace Tests
 		[Test]
 		public void parse_all_possible_tokens()
 		{
-			var result = parser.Parse("hello& wo_rld _\\<__\r\n");
+			var result = parser.Parse("hello& wo_rld _\\<__\r\n`");
 			Assert.AreEqual(new Token[]
 			{
 				new Token("hello", TokenType.Word), 
@@ -34,8 +34,9 @@ namespace Tests
 				new Token(" ", TokenType.Whitespace),
 				new Token("_", TokenType.Underscore),
 				new Token("\\<", "&lt;", TokenType.Separator), 
-				new Token("__", TokenType.Underscore),
+				new Token("__", TokenType.DoubleUnderscore),
  				new Token("\r\n", TokenType.LineEnd), 
+				new Token("`", TokenType.Code)
 			}, result);
 		}
 

@@ -12,6 +12,7 @@ namespace Mark.HTMLParser
 		Whitespace,
 		Word,
 		Underscore,
+		DoubleUnderscore,
 		Code,
 		Separator
 	}

@@ -24,7 +24,7 @@ namespace Tests
 		public void find_two_underscores_if_possible()
 		{
 			var result = Reader.ReadToken("__abc");
-			Assert.True(new Token("__", TokenType.Underscore).Equals(result));
+			Assert.True(new Token("__", TokenType.DoubleUnderscore).Equals(result));
 		}
 
 		[Test]
@@ -38,7 +38,7 @@ namespace Tests
 		public void find_no_more_than_two_underscores()
 		{
 			var result = Reader.ReadToken("___abc");
-			Assert.True(new Token("__", TokenType.Underscore).Equals(result));
+			Assert.True(new Token("__", TokenType.DoubleUnderscore).Equals(result));
 		}
 	}
 }
