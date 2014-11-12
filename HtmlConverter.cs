@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.Remoting.Messaging;
-using System.Text;
 using Mark.HTMLParser;
 
 namespace Mark
@@ -15,56 +13,56 @@ namespace Mark
 			{TokenType.Code, "code"}, {TokenType.Underscore, "em"}, {TokenType.DoubleUnderscore, "strong"}
 		};
 
-		private static string RecursiveConstruct(List<Token> tokens, int start, int finish, bool code = false)
+		private static readonly Dictionary<TokenType, string> TypeToSource = new Dictionary<TokenType, string>
 		{
-			string result = "";
-			if (code)
+			{TokenType.Code, "`"}, {TokenType.Underscore, "_"}, {TokenType.DoubleUnderscore, "__"}
+		}; 
+
+		private static string BuildTree(List<int>[] edges, List<Token> tokens, int node, bool code = false)
+		{
+			bool isCode =  code || node > 0 && tokens[node - 1].type == TokenType.Code;
+			var subTree = edges[node].Aggregate("", (current, i) => current + BuildTree(edges, tokens, i, isCode));
+			if (node == 0)
+				return subTree;
+			if (TypeToTag.ContainsKey(tokens[node - 1].type))
 			{
-				return tokens.Skip(start).Take(finish - start).Select(token => token.value)
-					.Aggregate("", (str, token) => str + token);
+				var tag = TypeToTag[tokens[node - 1].type];
+				var oldTag = TypeToSource[tokens[node - 1].type];
+				return code ? oldTag + subTree + oldTag : "<" + tag + ">" + subTree + "</" + tag + ">";
 			}
-			int position = start;
-			while (position < finish)
-			{
-				var token = tokens[position];
-				if (token.type == TokenType.Underscore || token.type == TokenType.DoubleUnderscore)
-				{
-					int i = -1;
-					for (int j = position + 1; j < finish; j++)
-					{
-						if (tokens[j].type == token.type && (j + 1 == tokens.Count || tokens[j + 1].type != TokenType.Word))
-						{
-							i = j;
-							break;
-						}
-					}
-					if (i > position)
-					{
-						var tag = TypeToTag[token.type];
-						result += "<" + tag + ">" + RecursiveConstruct(tokens, position + 1, i) + "</" + tag + ">";
-						position = i + 1;
-						continue;
-					}
-				} 
-				if (token.type == TokenType.Code)
-				{
-					int i = tokens.FindIndex(position + 1, current => current.type == TokenType.Code);
-					if (i > start && i < finish)
-					{
-						result += "<code>" + RecursiveConstruct(tokens, position + 1, i, true) + "</code>";
-						position = i + 1;
-						continue;
-					}
-				}
-				result += token.value;
-				position++;
-			}
-			return result;
+			return tokens[node - 1].value;
 		}
 
 		private static string ConstructHtmlParagraph(List<Token> tokens)
 		{
-			return RecursiveConstruct(tokens, 0, tokens.Count);
+			var edges = new List<int>[tokens.Count + 1];
+			for (int i = 0; i < edges.Length; i++)
+				edges[i] = new List<int>();
+			var stack = new Stack<Tuple<TokenType, int>>();
+			stack.Push(new Tuple<TokenType, int>(TokenType.Word, 0));
+			for (int i = 0; i < tokens.Count; i++)
+			{
+				var token = tokens[i];
+				if (!TypeToTag.ContainsKey(token.type))
+				{
+					edges[stack.Peek().Item2].Add(i + 1);
+					continue;
+				}
+				if (token.type == stack.Peek().Item1)
+				{
+					if (token.type == TokenType.Code || i == tokens.Count - 1 || tokens[i + 1].type != TokenType.Word)
+					{
+						stack.Pop();
+						continue;
+					}
+				}
+				edges[stack.Peek().Item2].Add(i + 1);
+				if (token.type == TokenType.Code || i == 0 || tokens[i - 1].type != TokenType.Word)
+				{
+					stack.Push(new Tuple<TokenType, int>(token.type, i + 1));
+				}
+			}
+			return BuildTree(edges, tokens, 0);
 		}
 
 		static private List<string> BuildParagraphs(string[] lines)

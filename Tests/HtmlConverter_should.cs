@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using NUnit.Framework;
 using Mark;
 
@@ -62,9 +58,9 @@ namespace Tests
 		[Test]
 		public void find_code_tag()
 		{
-			string text = "`hello world`";
+			string text = "`hello _p_ world`";
 			string result = HtmlConverter.ConvertString(text);
-			Assert.AreEqual("<html><head><meta charset=\"UTF-8\"></head>\n<p>\n<code>hello world</code>\n</p>\n</html>", result);
+			Assert.AreEqual("<html><head><meta charset=\"UTF-8\"></head>\n<p>\n<code>hello _p_ world</code>\n</p>\n</html>", result);
 		}
 
 		[Test]
