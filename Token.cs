@@ -14,7 +14,8 @@ namespace Mark
 		Underscore,
 		DoubleUnderscore,
 		Code,
-		Separator
+		Separator,
+		Unknown
 	}
 
 	public class Token

@@ -43,12 +43,5 @@ namespace Tests
 			var result = Reader.ReadToken(">we");
 			Assert.True(new Token(">", "&gt;", TokenType.Separator).Equals(result));
 		}
-
-		[Test]
-		public void find_code_separator()
-		{
-			var result = Reader.ReadToken("`code`");
-			Assert.True(new Token("`", TokenType.Code).Equals(result));
-		}
 	}
 }

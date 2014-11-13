@@ -42,6 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CodeReader_should.cs" />
     <Compile Include="EscapeReader_should.cs" />
     <Compile Include="HtmlConverter_should.cs" />
     <Compile Include="LineEndReader_should.cs" />

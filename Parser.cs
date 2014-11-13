@@ -16,6 +16,7 @@ namespace Mark
 			new WordReader(),
 			new UnderscoreReader(),
 			new EscapeReader(),
+			new CodeReader(),
 			new SeparatorReader()
 		};
 
@@ -39,7 +40,7 @@ namespace Mark
 				}
 				if (best == null)
 				{
-					best = new Token(text.Substring(0, 1), TokenType.Separator);
+					best = new Token(text.Substring(0, 1), TokenType.Unknown);
 				}
 				result.Add(best);
 				text = text.Substring(best.source.Length);

@@ -35,13 +35,13 @@ namespace Tests
 		}
 
 		[Test]
-		public void parse_unknown_symbols_as_separators()
+		public void parse_unknown_symbols()
 		{
 			var result = parser.Parse("{}");
 			Assert.AreEqual(new Token[]
 			{
-				new Token("{", TokenType.Separator),
-				new Token("}", TokenType.Separator),  
+				new Token("{", TokenType.Unknown),
+				new Token("}", TokenType.Unknown),  
 			}, result);
 		}
 	}

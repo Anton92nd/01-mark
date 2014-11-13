@@ -5,7 +5,7 @@ namespace Mark.Readers
 {
 	public class SeparatorReader : ITokenReader
 	{
-		private static readonly char[] Separators = new char[] {'`', '.', ',', '\'', '\"', '!', '?', '%', '@',
+		private static readonly char[] Separators =  {'.', ',', '\'', '\"', '!', '?', '%', '@',
 			'#', '$', '^', '&', '*', '/', '<', '>', '-', '=' };
 
 		private static readonly Dictionary<string, string> NeedEscape = new Dictionary<string, string>()
@@ -18,8 +18,6 @@ namespace Mark.Readers
 			if (from.Length == 0)
 				return null;
 			string result = from.Substring(0, 1);
-			if (from[0] == '`')
-				return new Token(result, TokenType.Code);
 			if (NeedEscape.ContainsKey(result))
 			{
 				result = NeedEscape[result];

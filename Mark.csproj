@@ -32,9 +32,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="nunit.framework">
-      <HintPath>..\clean-code\01-cleancode-task\packages\NUnit.2.6.3\lib\nunit.framework.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -45,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="HtmlConverter.cs" />
+    <Compile Include="Readers\CodeReader.cs" />
     <Compile Include="Readers\EscapeReader.cs" />
     <Compile Include="Readers\LineEndReader.cs" />
     <Compile Include="Parser.cs" />
@@ -58,6 +56,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
