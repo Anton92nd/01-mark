@@ -9,7 +9,7 @@ namespace Mark
 {
 	public class Parser
 	{
-		private static readonly List<ITokenReader> readers = new List<ITokenReader>
+		private static readonly List<ITokenReader> Readers = new List<ITokenReader>
 		{
 			new LineEndReader(),
 			new WhitespaceReader(),
@@ -27,7 +27,7 @@ namespace Mark
 			{
 				Token best = null;
 				int bestLength = 0;
-				foreach (var i in readers)
+				foreach (var i in Readers)
 				{
 					Token current = i.ReadToken(text);
 					if (current == null)

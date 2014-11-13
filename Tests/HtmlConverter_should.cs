@@ -8,6 +8,8 @@ namespace Tests
 	[TestFixture]
 	class HtmlConverter_should
 	{
+		private const string TestsDirectory = "../../tests/";
+
 		[Test]
 		public void throw_exception_if_no_such_file()
 		{
@@ -17,26 +19,26 @@ namespace Tests
 		[Test]
 		public void create_file_with_html_extension()
 		{
-			HtmlConverter.ConvertFile("sample.txt");
-			Assert.True(File.Exists("sample.html"));
+			HtmlConverter.ConvertFile(TestsDirectory + "sample.txt");
+			Assert.True(File.Exists(TestsDirectory + "sample.html"));
 		}
 
 		[Test]
 		public void convert_empty_file_into_file_with_html_tag()
 		{
 			var lineEndings = new[] {"\r\n", "\r", "\n"};
-			HtmlConverter.ConvertFile("empty.txt");
-			var result = new StreamReader("empty.html").ReadToEnd().Split(lineEndings, StringSplitOptions.RemoveEmptyEntries);
-			var expected = new StreamReader("emptyResult.txt").ReadToEnd().Split(lineEndings, StringSplitOptions.RemoveEmptyEntries);
+			HtmlConverter.ConvertFile(TestsDirectory + "empty.txt");
+			var result = new StreamReader(TestsDirectory + "empty.html").ReadToEnd().Split(lineEndings, StringSplitOptions.RemoveEmptyEntries);
+			var expected = new StreamReader(TestsDirectory + "emptyResult.txt").ReadToEnd().Split(lineEndings, StringSplitOptions.RemoveEmptyEntries);
 			Assert.AreEqual(expected, result);
 		}
 
 		[Test]
 		public void add_p_tags_around_paragraphs()
 		{
-			string text = "This\nis\nfirst paragraph\n   \nThis is\nsecond\n";
+			string text = "This\r\nis\r\nfirst paragraph\r\n   \r\nThis is\r\nsecond\r\n";
 			string result = HtmlConverter.ConvertString(text);
-			Assert.AreEqual("<html><head><meta charset=\"UTF-8\"></head>\n<body>\n<p>\nThis\nis\nfirst paragraph\n</p>\n<p>\nThis is\nsecond\n</p>\n</body>\n</html>", result);
+			Assert.AreEqual("<html><head><meta charset=\"UTF-8\"></head>\r\n<body>\r\n<p>\r\nThis\r\nis\r\nfirst paragraph\r\n</p>\r\n<p>\r\nThis is\r\nsecond\r\n</p>\r\n</body>\r\n</html>", result);
 		}
 
 		[Test]
@@ -44,7 +46,7 @@ namespace Tests
 		{
 			string text = "_hello world_";
 			string result = HtmlConverter.ConvertString(text);
-			Assert.AreEqual("<html><head><meta charset=\"UTF-8\"></head>\n<body>\n<p>\n<em>hello world</em>\n</p>\n</body>\n</html>", result);
+			Assert.AreEqual("<html><head><meta charset=\"UTF-8\"></head>\r\n<body>\r\n<p>\r\n<em>hello world</em>\r\n</p>\r\n</body>\r\n</html>", result);
 		}
 
 		[Test]
@@ -52,7 +54,7 @@ namespace Tests
 		{
 			string text = "__hello world__";
 			string result = HtmlConverter.ConvertString(text);
-			Assert.AreEqual("<html><head><meta charset=\"UTF-8\"></head>\n<body>\n<p>\n<strong>hello world</strong>\n</p>\n</body>\n</html>", result);
+			Assert.AreEqual("<html><head><meta charset=\"UTF-8\"></head>\r\n<body>\r\n<p>\r\n<strong>hello world</strong>\r\n</p>\r\n</body>\r\n</html>", result);
 		}
 
 		[Test]
@@ -60,7 +62,7 @@ namespace Tests
 		{
 			string text = "`hello _p_ world`";
 			string result = HtmlConverter.ConvertString(text);
-			Assert.AreEqual("<html><head><meta charset=\"UTF-8\"></head>\n<body>\n<p>\n<code>hello _p_ world</code>\n</p>\n</body>\n</html>", result);
+			Assert.AreEqual("<html><head><meta charset=\"UTF-8\"></head>\r\n<body>\r\n<p>\r\n<code>hello _p_ world</code>\r\n</p>\r\n</body>\r\n</html>", result);
 		}
 
 		[Test]
@@ -68,7 +70,7 @@ namespace Tests
 		{
 			string text = "_hello __world__!_";
 			string result = HtmlConverter.ConvertString(text);
-			Assert.AreEqual("<html><head><meta charset=\"UTF-8\"></head>\n<body>\n<p>\n<em>hello <strong>world</strong>!</em>\n</p>\n</body>\n</html>", result);
+			Assert.AreEqual("<html><head><meta charset=\"UTF-8\"></head>\r\n<body>\r\n<p>\r\n<em>hello <strong>world</strong>!</em>\r\n</p>\r\n</body>\r\n</html>", result);
 		}
 
 		[Test]
@@ -76,7 +78,7 @@ namespace Tests
 		{
 			string text = "\\_hello world\\_";
 			string result = HtmlConverter.ConvertString(text);
-			Assert.AreEqual("<html><head><meta charset=\"UTF-8\"></head>\n<body>\n<p>\n_hello world_\n</p>\n</body>\n</html>", result);
+			Assert.AreEqual("<html><head><meta charset=\"UTF-8\"></head>\r\n<body>\r\n<p>\r\n_hello world_\r\n</p>\r\n</body>\r\n</html>", result);
 		}
 	}
 }

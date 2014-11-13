@@ -73,7 +73,7 @@ namespace Mark
 				if (lines.Length == 0)
 					break;
 				var paragraph = lines.TakeWhile(line => line.Trim().Length > 0).ToList();
-				result.Add(paragraph.Aggregate((sentence, line) => sentence + "\n" + line));
+				result.Add(paragraph.Aggregate((sentence, line) => sentence + "\r\n" + line));
 				lines = lines.SkipWhile(line => line.Trim().Length > 0).ToArray();
 			}
 			return result;
@@ -87,8 +87,8 @@ namespace Mark
 			var lines = content.Split(LineEndings, StringSplitOptions.None).ToArray();
 			var paragraphs = BuildParagraphs(lines);
 			var parsedParagraphs = paragraphs.Select(x => ConstructHtmlParagraph(Parser.Parse(x))).ToArray();
-			return "<html><head><meta charset=\"UTF-8\"></head>\n<body>\n" + 
-				parsedParagraphs.Aggregate("", (result, str) => result + "<p>\n" + str + "\n</p>\n") + "</body>\n</html>";
+			return "<html><head><meta charset=\"UTF-8\"></head>\r\n<body>\r\n" + 
+				parsedParagraphs.Aggregate("", (result, str) => result + "<p>\r\n" + str + "\r\n</p>\r\n") + "</body>\r\n</html>";
 		}
 
 		public static void ConvertFile(string fileNameWithExtension)
