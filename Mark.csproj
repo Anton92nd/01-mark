@@ -45,15 +45,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="HtmlConverter.cs" />
-    <Compile Include="HTMLParser\EscapeReader.cs" />
-    <Compile Include="HTMLParser\LineEndReader.cs" />
-    <Compile Include="HTMLParser\Parser.cs" />
-    <Compile Include="HTMLParser\SeparatorReader.cs" />
-    <Compile Include="HTMLParser\Token.cs" />
-    <Compile Include="HTMLParser\ITokenReader.cs" />
-    <Compile Include="HTMLParser\UnderscoreReader.cs" />
-    <Compile Include="HTMLParser\WhitespaceReader.cs" />
-    <Compile Include="HTMLParser\WordReader.cs" />
+    <Compile Include="Readers\EscapeReader.cs" />
+    <Compile Include="Readers\LineEndReader.cs" />
+    <Compile Include="Parser.cs" />
+    <Compile Include="Readers\SeparatorReader.cs" />
+    <Compile Include="Token.cs" />
+    <Compile Include="Readers\ITokenReader.cs" />
+    <Compile Include="Readers\UnderscoreReader.cs" />
+    <Compile Include="Readers\WhitespaceReader.cs" />
+    <Compile Include="Readers\WordReader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Mark.HTMLParser;
 
 namespace Mark
 {
@@ -65,7 +64,7 @@ namespace Mark
 			return BuildTree(edges, tokens, 0);
 		}
 
-		static private List<string> BuildParagraphs(string[] lines)
+		private static List<string> BuildParagraphs(string[] lines)
 		{
 			var result = new List<string>();
 			while (lines.Length > 0)
@@ -83,15 +82,16 @@ namespace Mark
 		private static readonly string[] LineEndings = { "\r\n", "\r", "\n" };
 		private static readonly Parser Parser = new Parser();
 
-		static public string ConvertString(string content)
+		public static string ConvertString(string content)
 		{
 			var lines = content.Split(LineEndings, StringSplitOptions.None).ToArray();
 			var paragraphs = BuildParagraphs(lines);
 			var parsedParagraphs = paragraphs.Select(x => ConstructHtmlParagraph(Parser.Parse(x))).ToArray();
-			return "<html><head><meta charset=\"UTF-8\"></head>\n" + parsedParagraphs.Aggregate("", (result, str) => result + "<p>\n" + str + "\n</p>\n") + "</html>";
+			return "<html><head><meta charset=\"UTF-8\"></head>\n<body>\n" + 
+				parsedParagraphs.Aggregate("", (result, str) => result + "<p>\n" + str + "\n</p>\n") + "</body>\n</html>";
 		}
 
-		static public void ConvertFile(string fileNameWithExtension)
+		public static void ConvertFile(string fileNameWithExtension)
 		{
 			using (var input = File.OpenText(fileNameWithExtension))
 			{
@@ -103,7 +103,7 @@ namespace Mark
 			}
 		}
 
-		static void Main(string[] args)
+		public static void Main(string[] args)
 		{
 			string fileName = Console.ReadLine();
 			ConvertFile(fileName);

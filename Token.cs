@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Mark.HTMLParser
+namespace Mark
 {
 	public enum TokenType
 	{

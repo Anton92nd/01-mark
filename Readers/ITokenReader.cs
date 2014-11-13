@@ -1,4 +1,4 @@
-﻿namespace Mark.HTMLParser
+﻿namespace Mark.Readers
 {
 	public interface ITokenReader
 	{
