@@ -6,7 +6,7 @@
 		{
 			if (!from.StartsWith("\\") || from.Length < 2)
 				return null;
-			string value = from.Substring(1, 1);
+			var value = from.Substring(1, 1);
 			if (value.Equals("<"))
 				value = "&lt;";
 			if (value.Equals(">"))

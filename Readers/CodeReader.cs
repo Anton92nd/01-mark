@@ -6,7 +6,7 @@
 		{
 			if (!from.StartsWith("`"))
 				return null;
-			int i = 1;
+			var i = 1;
 			while (i < from.Length && from[i] != '`')
 			{
 				i += from[i] == '\\' ? 2 : 1;

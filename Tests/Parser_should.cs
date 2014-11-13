@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System.Linq;
+using NUnit.Framework;
 using Mark;
 
 namespace Tests
@@ -14,22 +15,11 @@ namespace Tests
 		}
 
 		[Test]
-		public void parse_all_possible_tokens()
+		public void not_lose_any_symbols()
 		{
-			var result = Parser.Parse("hello& wo_rld _\\<__\r\n`");
-			Assert.AreEqual(new Token[]
-			{
-				new Token("hello", TokenType.Word), 
-				new Token("&", "&amp;", TokenType.Separator), 
-				new Token(" ", TokenType.Whitespace),
-				new Token("wo_rld", TokenType.Word),
-				new Token(" ", TokenType.Whitespace),
-				new Token("_", TokenType.Underscore),
-				new Token("\\<", "&lt;", TokenType.Separator), 
-				new Token("__", TokenType.DoubleUnderscore),
- 				new Token("\r\n", TokenType.LineEnd), 
-				new Token("`", TokenType.Unknown)
-			}, result);
+			var text = "hello& wo_rld _\\<__\r\n`";
+			var result = Parser.Parse(text).Select(token => token.Source).Aggregate("", (str, source) => str + source);
+			Assert.AreEqual(text, result);
 		}
 
 		[Test]

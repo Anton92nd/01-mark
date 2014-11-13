@@ -12,7 +12,7 @@ namespace Mark.Readers
 		{
 			if (from.Length == 0)
 				return null;
-			string result = from.Substring(0, 1);
+			var result = from.Substring(0, 1);
 			return Separators.Contains(from[0]) ? new Token(result, HttpUtility.HtmlEncode(result), TokenType.Separator) : null; 
 		}
 	}

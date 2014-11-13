@@ -12,13 +12,6 @@ namespace Mark
 			{TokenType.Code, "code"}, {TokenType.Underscore, "em"}, {TokenType.DoubleUnderscore, "strong"}
 		};
 
-		private static readonly Dictionary<TokenType, string> TypeToSource = new Dictionary<TokenType, string>
-		{
-			{TokenType.Code, "`"}, {TokenType.Underscore, "_"}, {TokenType.DoubleUnderscore, "__"}
-		};
-
-
-
 		private static string ConstructHtmlParagraph(List<Token> tokens)
 		{
 			var newTokens = (new List<Token> { { new Token("", TokenType.Unknown) } }
@@ -30,13 +23,13 @@ namespace Mark
 		private static string ConcatTree(Tuple<List<int>,bool>[] edges, List<Token> tokens, int node, bool code = false)
 		{
 			var subTree = edges[node].Item1.Aggregate("", (str, i) =>
-				str + ConcatTree(edges, tokens, i, code || tokens[node].type == TokenType.Code));
-			if (!TypeToTag.ContainsKey(tokens[node].type) || edges[node].Item2)
-				return tokens[node].value + subTree;
-			var tag = TypeToTag[tokens[node].type];
-			if (tokens[node].type == TokenType.Code)
-				subTree = tokens[node].value + subTree;
-			var oldTag = tokens[node].source;
+				str + ConcatTree(edges, tokens, i, code || tokens[node].Type == TokenType.Code));
+			if (!TypeToTag.ContainsKey(tokens[node].Type) || edges[node].Item2)
+				return tokens[node].Value + subTree;
+			var tag = TypeToTag[tokens[node].Type];
+			if (tokens[node].Type == TokenType.Code)
+				subTree = tokens[node].Value + subTree;
+			var oldTag = tokens[node].Source;
 			return code ? oldTag + subTree + oldTag : "<" + tag + ">" + subTree + "</" + tag + ">";
 		}
 
@@ -54,16 +47,16 @@ namespace Mark
 			for (var i = 1; i < tokens.Count(); i++)
 			{
 				var token = tokens[i];
-				if (counter.ContainsKey(token.type))
+				if (counter.ContainsKey(token.Type))
 				{
-					if (counter[token.type] == 0)
+					if (counter[token.Type] == 0)
 					{
-						counter[token.type]++;
+						counter[token.Type]++;
 						treeEdges[stack.Peek().Item2].Item1.Add(i);
-						stack.Push(new Tuple<TokenType, int>(token.type, i));
+						stack.Push(new Tuple<TokenType, int>(token.Type, i));
 						continue;
 					}
-					while (stack.Peek().Item1 != token.type)
+					while (stack.Peek().Item1 != token.Type)
 					{
 						treeEdges[stack.Peek().Item2] = new Tuple<List<int>, bool>
 							(treeEdges[stack.Peek().Item2].Item1, true);
@@ -115,7 +108,7 @@ namespace Mark
 		public static void ConvertFile(string fileNameWithExtension)
 		{
 			var text = File.ReadAllText(fileNameWithExtension);
-			var fileName = fileNameWithExtension.Split('.')[0];
+			var fileName = fileNameWithExtension.Substring(0, fileNameWithExtension.LastIndexOf('.'));
 			var result = ConvertString(text);
 			File.WriteAllText(fileName + ".html", result);
 		}

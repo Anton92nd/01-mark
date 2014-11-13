@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web;
 using Mark.Readers;
 using MoreLinq;
@@ -29,9 +26,9 @@ namespace Mark
 			{
 				var best = Readers.Select(x => x.ReadToken(text)).Where(token => token != null)
 					.Concat(new Token(text.Substring(0, 1), HttpUtility.HtmlEncode(text.Substring(0, 1)), TokenType.Unknown))
-					.MaxBy(token => token.source.Length);
+					.MaxBy(token => token.Source.Length);
 				result.Add(best);
-				text = text.Substring(best.source.Length);
+				text = text.Substring(best.Source.Length);
 			}
 			return result;
 		}

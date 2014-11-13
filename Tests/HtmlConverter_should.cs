@@ -28,8 +28,8 @@ namespace Tests
 		{
 			var lineEndings = new[] {"\r\n", "\r", "\n"};
 			HtmlConverter.ConvertFile(TestsDirectory + "empty.txt");
-			var result = new StreamReader(TestsDirectory + "empty.html").ReadToEnd().Split(lineEndings, StringSplitOptions.RemoveEmptyEntries);
-			var expected = new StreamReader(TestsDirectory + "emptyResult.txt").ReadToEnd().Split(lineEndings, StringSplitOptions.RemoveEmptyEntries);
+			var result = File.ReadAllText(TestsDirectory + "empty.html").Split(lineEndings, StringSplitOptions.RemoveEmptyEntries);
+			var expected = File.ReadAllText(TestsDirectory + "emptyResult.txt").Split(lineEndings, StringSplitOptions.RemoveEmptyEntries);
 			Assert.AreEqual(expected, result);
 		}
 

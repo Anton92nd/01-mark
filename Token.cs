@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Mark
+﻿namespace Mark
 {
 	public enum TokenType
 	{
@@ -20,21 +14,21 @@ namespace Mark
 
 	public class Token
 	{
-		public readonly string source, value;
-		public readonly TokenType type;
+		public readonly string Source, Value;
+		public readonly TokenType Type;
 
 		public Token(string source, string value, TokenType type)
 		{
-			this.source = source;
-			this.value = value;
-			this.type = type;
+			this.Source = source;
+			this.Value = value;
+			this.Type = type;
 		}
 
 		public Token(string source, TokenType type)
 		{
-			this.source = source;
-			this.value = source;
-			this.type = type;
+			this.Source = source;
+			this.Value = source;
+			this.Type = type;
 		}
 
 		public override bool Equals(object obj)
@@ -42,7 +36,7 @@ namespace Mark
 			var token = obj as Token;
 			if (token == null)
 				return false;
-			return source.Equals(token.source) && value.Equals(token.value) && token.type == type;
+			return Source.Equals(token.Source) && Value.Equals(token.Value) && token.Type == Type;
 		}
 	}
 }
