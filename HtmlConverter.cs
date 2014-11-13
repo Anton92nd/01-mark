@@ -15,56 +15,78 @@ namespace Mark
 		private static readonly Dictionary<TokenType, string> TypeToSource = new Dictionary<TokenType, string>
 		{
 			{TokenType.Code, "`"}, {TokenType.Underscore, "_"}, {TokenType.DoubleUnderscore, "__"}
-		}; 
+		};
 
-		private static string BuildTree(List<int>[] edges, List<Token> tokens, int node, bool code = false)
-		{
-			bool isCode =  code || node > 0 && tokens[node - 1].type == TokenType.Code;
-			var subTree = edges[node].Aggregate("", (current, i) => current + BuildTree(edges, tokens, i, isCode));
-			if (node == 0)
-				return subTree;
-			if (TypeToTag.ContainsKey(tokens[node - 1].type))
-			{
-				var tag = TypeToTag[tokens[node - 1].type];
-				var oldTag = TypeToSource[tokens[node - 1].type];
-				return code ? oldTag + subTree + oldTag : "<" + tag + ">" + subTree + "</" + tag + ">";
-			}
-			return tokens[node - 1].value;
-		}
+
 
 		private static string ConstructHtmlParagraph(List<Token> tokens)
 		{
-			var edges = new List<int>[tokens.Count + 1];
-			for (int i = 0; i < edges.Length; i++)
-				edges[i] = new List<int>();
-			var stack = new Stack<Tuple<TokenType, int>>();
-			stack.Push(new Tuple<TokenType, int>(TokenType.Word, 0));
-			for (int i = 0; i < tokens.Count; i++)
-			{
-				var token = tokens[i];
-				if (!TypeToTag.ContainsKey(token.type))
-				{
-					edges[stack.Peek().Item2].Add(i + 1);
-					continue;
-				}
-				if (token.type == stack.Peek().Item1)
-				{
-					if (token.type == TokenType.Code || i == tokens.Count - 1 || tokens[i + 1].type != TokenType.Word)
-					{
-						stack.Pop();
-						continue;
-					}
-				}
-				edges[stack.Peek().Item2].Add(i + 1);
-				if (token.type == TokenType.Code || i == 0 || tokens[i - 1].type != TokenType.Word)
-				{
-					stack.Push(new Tuple<TokenType, int>(token.type, i + 1));
-				}
-			}
-			return BuildTree(edges, tokens, 0);
+			var newTokens = (new List<Token> { { new Token("", TokenType.Unknown) } }
+				.Concat(tokens)).ToList();
+			var treeEdges = BuildTree(newTokens);
+			return ConcatTree(treeEdges, newTokens, 0);
 		}
 
-		private static List<string> BuildParagraphs(string[] lines)
+		private static string ConcatTree(Tuple<List<int>,bool>[] edges, List<Token> tokens, int node, bool code = false)
+		{
+			var subTree = edges[node].Item1.Aggregate("", (str, i) =>
+				str + ConcatTree(edges, tokens, i, code || tokens[node].type == TokenType.Code));
+			if (!TypeToTag.ContainsKey(tokens[node].type) || edges[node].Item2)
+				return tokens[node].value + subTree;
+			var tag = TypeToTag[tokens[node].type];
+			if (tokens[node].type == TokenType.Code)
+				subTree = tokens[node].value + subTree;
+			var oldTag = tokens[node].source;
+			return code ? oldTag + subTree + oldTag : "<" + tag + ">" + subTree + "</" + tag + ">";
+		}
+
+		private static Tuple<List<int>, bool>[] BuildTree(List<Token> tokens)
+		{
+			var treeEdges = new Tuple<List<int>, bool>[tokens.Count()];
+			for (var i = 0; i < treeEdges.Length; i++)
+				treeEdges[i] = new Tuple<List<int>, bool>(new List<int>(), false);
+			var stack = new Stack<Tuple<TokenType, int>>();
+			var counter = new Dictionary<TokenType, int>
+			{
+				{TokenType.Underscore, 0}, {TokenType.DoubleUnderscore, 0}
+			};
+			stack.Push(new Tuple<TokenType, int>(TokenType.Unknown, 0));
+			for (var i = 1; i < tokens.Count(); i++)
+			{
+				var token = tokens[i];
+				if (counter.ContainsKey(token.type))
+				{
+					if (counter[token.type] == 0)
+					{
+						counter[token.type]++;
+						treeEdges[stack.Peek().Item2].Item1.Add(i);
+						stack.Push(new Tuple<TokenType, int>(token.type, i));
+						continue;
+					}
+					while (stack.Peek().Item1 != token.type)
+					{
+						treeEdges[stack.Peek().Item2] = new Tuple<List<int>, bool>
+							(treeEdges[stack.Peek().Item2].Item1, true);
+						if (counter.ContainsKey(stack.Peek().Item1))
+							counter[stack.Peek().Item1]--;
+						stack.Pop();
+					}
+					counter[stack.Peek().Item1]--;
+					stack.Pop();
+				}
+				else
+					treeEdges[stack.Peek().Item2].Item1.Add(i);
+			}
+			while (stack.Count() > 1)
+			{
+				treeEdges[stack.Peek().Item2] = new Tuple<List<int>, bool>
+							(treeEdges[stack.Peek().Item2].Item1, true);
+				stack.Pop();
+			}
+			return treeEdges;
+		}
+
+		private static IEnumerable<string> BuildParagraphs(string[] lines)
 		{
 			var result = new List<string>();
 			while (lines.Length > 0)
@@ -80,27 +102,22 @@ namespace Mark
 		}
 
 		private static readonly string[] LineEndings = { "\r\n", "\r", "\n" };
-		private static readonly Parser Parser = new Parser();
 
 		public static string ConvertString(string content)
 		{
 			var lines = content.Split(LineEndings, StringSplitOptions.None).ToArray();
 			var paragraphs = BuildParagraphs(lines);
-			var parsedParagraphs = paragraphs.Select(x => ConstructHtmlParagraph(Parser.Parse(x))).ToArray();
-			return "<html><head><meta charset=\"UTF-8\"></head>\r\n<body>\r\n" + 
+			var parsedParagraphs = paragraphs.Select(x => ConstructHtmlParagraph(Parser.Parse(x)));
+			return "<html><head><meta charset=\"UTF-8\"></head>\r\n<body>\r\n" +
 				parsedParagraphs.Aggregate("", (result, str) => result + "<p>\r\n" + str + "\r\n</p>\r\n") + "</body>\r\n</html>";
 		}
 
 		public static void ConvertFile(string fileNameWithExtension)
 		{
-			using (var input = File.OpenText(fileNameWithExtension))
-			{
-				var fileName = fileNameWithExtension.Split('.')[0];
-				var result = ConvertString(input.ReadToEnd());
-				var outputStream = File.CreateText(fileName + ".html");
-				outputStream.Write(result);
-				outputStream.Close();
-			}
+			var text = File.ReadAllText(fileNameWithExtension);
+			var fileName = fileNameWithExtension.Split('.')[0];
+			var result = ConvertString(text);
+			File.WriteAllText(fileName + ".html", result);
 		}
 
 		public static void Main(string[] args)

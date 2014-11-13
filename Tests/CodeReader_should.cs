@@ -10,10 +10,10 @@ namespace Tests
 	{
 		private static readonly CodeReader Reader = new CodeReader();
 		[Test]
-		public void find_code_separator()
+		public void find_code_content()
 		{
-			var result = Reader.ReadToken("`code`");
-			Assert.True(new Token("`", TokenType.Code).Equals(result));
+			var result = Reader.ReadToken("`_code_`");
+			Assert.AreEqual(new Token("`_code_`", "_code_", TokenType.Code), result);
 		}
 	}
 }

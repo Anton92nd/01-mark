@@ -4,7 +4,14 @@
 	{
 		public Token ReadToken(string from)
 		{
-			return (from.StartsWith("`")) ? new Token(from.Substring(0, 1), TokenType.Code) : null;
+			if (!from.StartsWith("`"))
+				return null;
+			int i = 1;
+			while (i < from.Length && from[i] != '`')
+			{
+				i += from[i] == '\\' ? 2 : 1;
+			}
+			return i >= from.Length ? null : new Token(from.Substring(0, i + 1), from.Substring(1, i - 1), TokenType.Code);
 		}
 	}
 }

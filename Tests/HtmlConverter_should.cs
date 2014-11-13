@@ -33,52 +33,64 @@ namespace Tests
 			Assert.AreEqual(expected, result);
 		}
 
+		private const string Beginning = "<html><head><meta charset=\"UTF-8\"></head>\r\n<body>\r\n",
+			Ending = "</body>\r\n</html>";
+
+
 		[Test]
 		public void add_p_tags_around_paragraphs()
 		{
-			string text = "This\r\nis\r\nfirst paragraph\r\n   \r\nThis is\r\nsecond\r\n";
-			string result = HtmlConverter.ConvertString(text);
-			Assert.AreEqual("<html><head><meta charset=\"UTF-8\"></head>\r\n<body>\r\n<p>\r\nThis\r\nis\r\nfirst paragraph\r\n</p>\r\n<p>\r\nThis is\r\nsecond\r\n</p>\r\n</body>\r\n</html>", result);
+			var text = "This\r\nis\r\nfirst paragraph\r\n   \r\nThis is\r\nsecond\r\n";
+			var result = HtmlConverter.ConvertString(text);
+			Assert.AreEqual(Beginning + "<p>\r\nThis\r\nis\r\nfirst paragraph\r\n</p>\r\n<p>\r\nThis is\r\nsecond\r\n</p>\r\n" + Ending, result);
 		}
 
 		[Test]
 		public void find_em_tag()
 		{
-			string text = "_hello world_";
-			string result = HtmlConverter.ConvertString(text);
-			Assert.AreEqual("<html><head><meta charset=\"UTF-8\"></head>\r\n<body>\r\n<p>\r\n<em>hello world</em>\r\n</p>\r\n</body>\r\n</html>", result);
+			var text = "_hello world_";
+			var result = HtmlConverter.ConvertString(text);
+			Assert.AreEqual(Beginning + "<p>\r\n<em>hello world</em>\r\n</p>\r\n" + Ending, result);
 		}
 
 		[Test]
 		public void find_strong_tag()
 		{
-			string text = "__hello world__";
-			string result = HtmlConverter.ConvertString(text);
-			Assert.AreEqual("<html><head><meta charset=\"UTF-8\"></head>\r\n<body>\r\n<p>\r\n<strong>hello world</strong>\r\n</p>\r\n</body>\r\n</html>", result);
+			var text = "__hello world__";
+			var result = HtmlConverter.ConvertString(text);
+			Assert.AreEqual(Beginning + "<p>\r\n<strong>hello world</strong>\r\n</p>\r\n" + Ending, result);
 		}
 
 		[Test]
 		public void find_code_tag()
 		{
-			string text = "`hello _p_ world`";
-			string result = HtmlConverter.ConvertString(text);
-			Assert.AreEqual("<html><head><meta charset=\"UTF-8\"></head>\r\n<body>\r\n<p>\r\n<code>hello _p_ world</code>\r\n</p>\r\n</body>\r\n</html>", result);
+			var text = "`hello _p_ world`";
+			var result = HtmlConverter.ConvertString(text);
+			Assert.AreEqual(Beginning + "<p>\r\n<code>hello _p_ world</code>\r\n</p>\r\n" + Ending, result);
 		}
 
 		[Test]
 		public void find_strong_tag_inside_em_tag()
 		{
-			string text = "_hello __world__!_";
-			string result = HtmlConverter.ConvertString(text);
-			Assert.AreEqual("<html><head><meta charset=\"UTF-8\"></head>\r\n<body>\r\n<p>\r\n<em>hello <strong>world</strong>!</em>\r\n</p>\r\n</body>\r\n</html>", result);
+			var text = "_hello __world__!_";
+			var result = HtmlConverter.ConvertString(text);
+			Assert.AreEqual(Beginning + "<p>\r\n<em>hello <strong>world</strong>!</em>\r\n</p>\r\n" + Ending, result);
 		}
 
 		[Test]
 		public void not_convert_escaped_underscore()
 		{
-			string text = "\\_hello world\\_";
-			string result = HtmlConverter.ConvertString(text);
-			Assert.AreEqual("<html><head><meta charset=\"UTF-8\"></head>\r\n<body>\r\n<p>\r\n_hello world_\r\n</p>\r\n</body>\r\n</html>", result);
+			var text = "\\_hello world\\_";
+			var result = HtmlConverter.ConvertString(text);
+			Assert.AreEqual(Beginning + "<p>\r\n_hello world_\r\n</p>\r\n" + Ending, result);
+		}
+
+		[Test]
+		public void ignore_odd_tags()
+		{
+			string text = "_test__`_ _";
+			var result = HtmlConverter.ConvertString(text);
+			Assert.AreEqual(Beginning + "<p>\r\n<em>test__`</em> _\r\n</p>\r\n" + Ending, result);
 		}
 	}
 }

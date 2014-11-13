@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using Mark.Readers;
+using MoreLinq;
 
 namespace Mark
 {
-	public class Parser
+	public static class Parser
 	{
 		private static readonly List<ITokenReader> Readers = new List<ITokenReader>
 		{
@@ -20,28 +22,14 @@ namespace Mark
 			new SeparatorReader()
 		};
 
-		public List<Token> Parse(string text)
+		public static List<Token> Parse(string text)
 		{
 			var result = new List<Token>();
 			while (text.Length > 0)
 			{
-				Token best = null;
-				int bestLength = 0;
-				foreach (var i in Readers)
-				{
-					Token current = i.ReadToken(text);
-					if (current == null)
-						continue;
-					if (current.source.Length > bestLength)
-					{
-						best = current;
-						bestLength = current.source.Length;
-					}
-				}
-				if (best == null)
-				{
-					best = new Token(text.Substring(0, 1), TokenType.Unknown);
-				}
+				var best = Readers.Select(x => x.ReadToken(text)).Where(token => token != null)
+					.Concat(new Token(text.Substring(0, 1), HttpUtility.HtmlEncode(text.Substring(0, 1)), TokenType.Unknown))
+					.MaxBy(token => token.source.Length);
 				result.Add(best);
 				text = text.Substring(best.source.Length);
 			}

@@ -6,19 +6,17 @@ namespace Tests
 	[TestFixture]
 	class HTMLParser_should
 	{
-		private static readonly Parser parser = new Parser();
-
 		[Test]
 		public void return_empty_list_on_empty_string()
 		{
-			var result = parser.Parse("");
+			var result = Parser.Parse("");
 			Assert.IsEmpty(result);
 		}
 
 		[Test]
 		public void parse_all_possible_tokens()
 		{
-			var result = parser.Parse("hello& wo_rld _\\<__\r\n`");
+			var result = Parser.Parse("hello& wo_rld _\\<__\r\n`");
 			Assert.AreEqual(new Token[]
 			{
 				new Token("hello", TokenType.Word), 
@@ -30,14 +28,14 @@ namespace Tests
 				new Token("\\<", "&lt;", TokenType.Separator), 
 				new Token("__", TokenType.DoubleUnderscore),
  				new Token("\r\n", TokenType.LineEnd), 
-				new Token("`", TokenType.Code)
+				new Token("`", TokenType.Unknown)
 			}, result);
 		}
 
 		[Test]
 		public void parse_unknown_symbols()
 		{
-			var result = parser.Parse("{}");
+			var result = Parser.Parse("{}");
 			Assert.AreEqual(new Token[]
 			{
 				new Token("{", TokenType.Unknown),
