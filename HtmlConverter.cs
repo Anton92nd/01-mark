@@ -79,17 +79,17 @@ namespace Mark
 			return treeEdges;
 		}
 
-		private static IEnumerable<string> BuildParagraphs(string[] lines)
+		private static IEnumerable<string> BuildParagraphs(IEnumerable<string> lines)
 		{
 			var result = new List<string>();
-			while (lines.Length > 0)
+			while (lines.Any())
 			{
-				lines = lines.SkipWhile(line => line.Trim().Length == 0).ToArray();
-				if (lines.Length == 0)
+				lines = lines.SkipWhile(line => line.Trim().Length == 0);
+				if (!lines.Any())
 					break;
-				var paragraph = lines.TakeWhile(line => line.Trim().Length > 0).ToList();
+				var paragraph = lines.TakeWhile(line => line.Trim().Length > 0);
 				result.Add(paragraph.Aggregate((sentence, line) => sentence + "\r\n" + line));
-				lines = lines.SkipWhile(line => line.Trim().Length > 0).ToArray();
+				lines = lines.SkipWhile(line => line.Trim().Length > 0);
 			}
 			return result;
 		}
@@ -98,7 +98,7 @@ namespace Mark
 
 		public static string ConvertString(string content)
 		{
-			var lines = content.Split(LineEndings, StringSplitOptions.None).ToArray();
+			var lines = content.Split(LineEndings, StringSplitOptions.None);
 			var paragraphs = BuildParagraphs(lines);
 			var parsedParagraphs = paragraphs.Select(x => ConstructHtmlParagraph(Parser.Parse(x)));
 			return "<html><head><meta charset=\"UTF-8\"></head>\r\n<body>\r\n" +
